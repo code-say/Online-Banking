@@ -1,0 +1,96 @@
+﻿@model IEnumerable<OnlineBankingSystem.Models.Transfer>
+
+@{
+    ViewBag.Title = "TransferDeatils";
+}
+@*<link href="~/Content/css/form.css" rel="stylesheet" type="text/css" />*@
+<h2>FundTransfer</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Dashbaord")
+</p>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-condensed">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FromAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ToAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DepositAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WithdrawAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransferAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeOfTransaction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Balance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrentBalance)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FromAccount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ToAccount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DepositAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WithdrawAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransferAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TransactionDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TypeOfTransaction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Balance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentBalance)
+                </td>
+                <td class="btn">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Userid }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Userid }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Userid })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<div>
+    @*@Html.ActionLink("back to Dashboard", "/")*@
+    <a href="javascript:void(0);" onclick="history.go(-1);">Back to Dashboard</a>
+</div>

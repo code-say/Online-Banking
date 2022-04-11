@@ -1,0 +1,102 @@
+﻿@model OnlineBankingSystem.Models.Transfer
+@{
+    ViewBag.Title = "Transfer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/css/form.css" rel="stylesheet" type="text/css" />
+
+<h2 class="text-info">TransferMoney</h2>
+
+
+@using (Html.BeginForm("Transfer", "Transfer", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <h4 class="text-info">Create an account for Internet banking.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Userid, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Userid, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.TransactionNumber, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.TransactionNumber, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.FromAccount, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FromAccount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.ToAccount, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.ToAccount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.DepositAmount, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DepositAmount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.WithdrawAmount, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.WithdrawAmount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.TransferAmount, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.TransferAmount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.TransactionDate, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.TypeOfTransaction, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.TypeOfTransaction, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Balance, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Balance, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.CurrentBalance, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.CurrentBalance, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Save" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-2">
+            <label class="label-success">@ViewBag.SuccessMessage</label>
+        </div>
+    </div>
+
+    <div>
+        @Html.ActionLink("back to List", "TransferDeatils")
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

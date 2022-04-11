@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<link href="~/Content/css/form.css" rel="stylesheet" type="text/css" />
+<!-- Carousel container -->
+<div id="my-pics" class="carousel slide" data-ride="carousel" style="width:960px;margin:auto;">
+
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#my-pics" data-slide-to="0" class="active"></li>
+        <li data-target="#my-pics" data-slide-to="1"></li>
+        <li data-target="#my-pics" data-slide-to="2"></li>
+    </ol>
+
+    <!-- Content -->
+    <div class="carousel-inner" role="listbox">
+
+        <!-- Slide 1 -->
+        <div class="item active">
+            <img src="~/Content/images/online-banking.jpg" alt="online-banking">
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="item">
+            <img src="~/Content/images/Is-VPN.png" alt="Security">
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="item">
+            <img src="~/Content/images/money.png" alt="Trust">
+        </div>
+
+    </div>
+
+    <!-- Previous/Next controls -->
+    <a class="left carousel-control" href="#my-pics" role="button" data-slide="prev">
+        <span class="icon-prev" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#my-pics" role="button" data-slide="next">
+        <span class="icon-next" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="text-info">Login</h2>
+        <p class="text-info">
+            Just Login & Enjoy!
+        </p>
+        <p>@Html.ActionLink("Login here", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "btn btn-primary" })</p>
+    </div>
+    <div class="col-md-6">
+        <h2 class="text-info">Register</h2>
+        <p class="text-info">
+            If you dont have account then register!
+        </p>
+        <p>@Html.ActionLink("Register here", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-info" })</p>
+    </div>
+    <div class="col-md-6">
+        <h2 class="text-info">Open a Savings Account</h2>
+        <p class="text-info">
+            Make savings account for future!
+        </p>
+        <p>@Html.ActionLink("Create", "SavingsAccount", "Savingsaccount", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-danger" })</p>
+    </div>
+    <div class="col-md-6">
+        <h2 class="text-info">Transfer Money</h2>
+        <p class="text-info">
+            Save & Secure!
+        </p>
+        <p>@Html.ActionLink("Transfer here!" , "Transfer", "Transfer", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-success" })</p>
+    </div>
+</div>
+
+<script src="~/Content/js/form.js"></script>

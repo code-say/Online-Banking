@@ -1,0 +1,141 @@
+﻿@model OnlineBankingSystem.Models.savingsaccount
+@{
+    ViewBag.Title = "SavingsAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/css/form.css" rel="stylesheet" type="text/css" />
+
+<h2 class="text-info">SavingsAccount</h2>
+
+@using (Html.BeginForm("SavingsAccount", "Savingsaccount", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <h4 class="text-info">Create an account for Internet banking.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Title, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.MiddleName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.FatherName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FatherName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Mobile, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.AdharNo, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.AdharNo, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.DOB, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DOB, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Addressline1, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Addressline1, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Addressline2, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Addressline2, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Landmark, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Landmark, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.State, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.State, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.City, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Pincode, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Pincode, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.OccupationType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.OccupationType, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Sourceincome, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Sourceincome, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group text-info">
+        @Html.LabelFor(m => m.Grossalary, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Grossalary, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Save" />
+        </div>
+    </div>
+
+    <div class="form-group text-info">
+        <div class="col-md-offset-2 col-md-2">
+            <label class="label-success">@ViewBag.SuccessMessage</label>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

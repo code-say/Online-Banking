@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="OnlineBankModel1StoreContainer" CdmEntityContainer="OnlineBankEntities2">
+    <EntitySetMapping Name="savingsaccounts">
+      <EntityTypeMapping TypeName="OnlineBankModel1.savingsaccount">
+        <MappingFragment StoreEntitySet="savingsaccount">
+          <ScalarProperty Name="accountId" ColumnName="accountId" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="FatherName" ColumnName="FatherName" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="AdharNo" ColumnName="AdharNo" />
+          <ScalarProperty Name="DOB" ColumnName="DOB" />
+          <ScalarProperty Name="Addressline1" ColumnName="Addressline1" />
+          <ScalarProperty Name="Addressline2" ColumnName="Addressline2" />
+          <ScalarProperty Name="Landmark" ColumnName="Landmark" />
+          <ScalarProperty Name="State" ColumnName="State" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Pincode" ColumnName="Pincode" />
+          <ScalarProperty Name="OccupationType" ColumnName="OccupationType" />
+          <ScalarProperty Name="Sourceincome" ColumnName="Sourceincome" />
+          <ScalarProperty Name="Grossalary" ColumnName="Grossalary" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,51 @@
+﻿@model OnlineBankingSystem.Models.savingsaccount
+@{
+    ViewBag.Title = "Account Details";
+    Layout = "~/Views/Shared/Dashboard.cshtml";
+}
+
+<h3>AccountDetails</h3>
+<hr />
+
+@section head{
+    <style type="text/css">
+        body {
+            background-image: url('/Content/images/pexels.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+        }
+    </style>
+
+}
+
+<div>
+    <table>
+        <tr><td>Title : </td><td>@Model.Title</td></tr>
+        <tr><td>Account Holder Name : </td><td>@Model.FirstName @Model.MiddleName  @Model.LastName</td></tr>
+        <tr><td>Father Name : </td><td>@Model.FatherName</td></tr>
+        <tr><td>Mobile No : </td><td>@Model.Mobile</td></tr>
+        <tr><td>Email ID : </td><td>@Model.Email</td></tr>
+        <tr><td>Aadhar Card Number : </td><td>@Model.AdharNo</td></tr>
+        <tr><td>Date Of Birth : </td><td>@Model.DOB</td></tr>
+        <tr><td>Temporary Address : </td><td>@Model.Addressline1</td></tr>
+        <tr><td>Permanent Address : </td><td>@Model.Addressline2</td></tr>
+        <tr><td>Landmark: </td><td>@Model.Landmark</td></tr>
+        <tr><td>State: </td><td>@Model.State</td></tr>
+        <tr><td>City: </td><td>@Model.City</td></tr>
+        <tr><td>Pincode: </td><td>@Model.Pincode</td></tr>
+        <tr><td>Occupation : </td><td>@Model.OccupationType</td></tr>
+        <tr><td>Annual Income : </td><td>@Model.Sourceincome</td></tr>
+        <tr><td>Account Balance : </td><td>@Model.Grossalary</td></tr>
+    </table>
+</div>
+
+<br />
+<br />
+
+<div>
+    <input type="button"
+           value="Back"
+           onclick="location.href='@Url.Action("Index","Dashboard")'" />
+</div>
+

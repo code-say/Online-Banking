@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/css/form.css" rel="stylesheet" type="text/css" />
+
+
+    <style type="text/css">
+        body {
+            background-image: url('/Content/images/pexels.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+        }
+    </style>
+
+
+<h2 class="btn btn-primary bg-info">Dashboard</h2>
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    @*<link href="~/Content/bootstrap.min.css" rel="stylesheet">*@
+
+</head>
+
+<body>
+    <nav class="navbar sticky-top flex-md-nowrap p-0 ">
+
+            <a href="javascript:void(0);" onclick="history.go(-1);" class="navbar-brand col-sm-6 col-md-3 mr-0" href="#">Online Bank</a>
+   
+        @*<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">*@
+        @*<ul class="nav nav-pills ">
+            <li role="presentation" class="active"><a href="#">Account Statement</a></li>
+            <li role="presentation"><a href="#">Fund Transfer</a></li>
+            <li role="presentation"><a href="#">User Profile</a></li>
+            <li role="presentation"><a href="#">Channge UserID Password</a></li>
+        </ul>*@
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <div class=" btn btn-outline-primary mr-0 ">
+                            <input type="button"
+                                   value="Account Details"
+                                   onclick="location.href = '@Url.Action("AccountDetails","Savingsaccount")'" />
+
+                        @*<li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <span data-feather="home"></span>
+                                Account Statement <span class="sr-only">(current)</span>
+                            </a>
+                        </li>*@
+                </div>
+                <div class=" btn btn-outline-primary mr-0 ">
+                    <input type="button"
+                           value="Fund Transfer"
+                           onclick="location.href = '@Url.Action("TransferDeatils","Transfer")'" />
+                    @*<li class="nav-item">
+                <a class="nav-link" href="#">
+                    <span data-feather="file"></span>
+                    Fund Transfer
+                </a>
+            </li>*@
+                </div>
+                <div class="btn btn btn-outline-primary mr-0 ">
+                    <input type="button"
+                           value="User Profile"
+                           onclick="location.href = '@Url.Action("uDetails","userDetails")'" />
+                </div>
+                @*<li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <span data-feather="shopping-cart"></span>
+                        User Profile
+                    </a>
+                </li>*@
+                <div class="btn btn btn-outline-primary mr-0 ">
+                    <input type="button"
+                           value="Change ID-Pass"
+                           onclick="location.href = '@Url.Action("ForgotPassword","Account")'" />
+
+                </div>
+                @*<li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <span data-feather="users"></span>
+                        Change ID-Pass
+                    </a>
+                </li>*@
+                </ul>
+</div>
+            </nav>
+
+            
+
+            @*<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+                </main>*@
+        </div>
+    </div>
+
+
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+        
+</body>
+</html>

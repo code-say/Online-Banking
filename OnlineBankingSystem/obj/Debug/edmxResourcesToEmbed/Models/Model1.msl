@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="OnlineBankModel2StoreContainer" CdmEntityContainer="OnlineBankEntities3">
+    <EntitySetMapping Name="Transfers">
+      <EntityTypeMapping TypeName="OnlineBankModel2.Transfer">
+        <MappingFragment StoreEntitySet="Transfer">
+          <ScalarProperty Name="Userid" ColumnName="Userid" />
+          <ScalarProperty Name="TransactionNumber" ColumnName="TransactionNumber" />
+          <ScalarProperty Name="FromAccount" ColumnName="FromAccount" />
+          <ScalarProperty Name="ToAccount" ColumnName="ToAccount" />
+          <ScalarProperty Name="DepositAmount" ColumnName="DepositAmount" />
+          <ScalarProperty Name="WithdrawAmount" ColumnName="WithdrawAmount" />
+          <ScalarProperty Name="TransferAmount" ColumnName="TransferAmount" />
+          <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+          <ScalarProperty Name="TypeOfTransaction" ColumnName="TypeOfTransaction" />
+          <ScalarProperty Name="Balance" ColumnName="Balance" />
+          <ScalarProperty Name="CurrentBalance" ColumnName="CurrentBalance" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
