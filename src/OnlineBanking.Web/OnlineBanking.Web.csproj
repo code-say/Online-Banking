@@ -12,6 +12,10 @@
     <!-- Latest .NET 10 servicing patches -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.*" />
 
+    <!-- AI assistant: provider-neutral chat + function calling, Gemini via Google's own SDK -->
+    <PackageReference Include="Microsoft.Extensions.AI" Version="10.*" />
+    <PackageReference Include="Google.GenAI" Version="1.*" />
+
     <!-- Lift vulnerable transitive versions (NU1903) to patched releases -->
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.*" />
   </ItemGroup>

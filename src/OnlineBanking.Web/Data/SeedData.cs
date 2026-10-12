@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineBanking.Web.Entities;
+using OnlineBanking.Web.Infrastructure;
 
 namespace OnlineBanking.Web.Data;
 
@@ -137,7 +138,7 @@ public static class SeedData
             {
                 if (_entries.Count == 0)
                     foreach (var (at, seq, apply) in _ops.OrderBy(o => o.At).ThenBy(o => o.Seq))
-                        apply($"TXN{at:yyMMddHHmm}{seq:D6}");
+                        apply($"TXN{Format.ToIst(at):yyMMddHHmm}{seq:D6}");
                 return _entries;
             }
         }
