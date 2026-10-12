@@ -14,9 +14,18 @@ namespace OnlineBanking.Web.Controllers;
 public class TransferController(AppDbContext db, BankingService banking) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index(int? from, string? to, CancellationToken ct)
+    public async Task<IActionResult> Index(int? from, string? to, decimal? amount, string? remarks, string? src, CancellationToken ct)
     {
-        var model = new TransferViewModel { FromAccountId = from, ToAccountNumber = to ?? "", RequestId = Guid.NewGuid() };
+        // from/to/amount/remarks can be prefilled (e.g. by the assistant); the customer still reviews and enters the PIN
+        var model = new TransferViewModel
+        {
+            FromAccountId = from,
+            ToAccountNumber = to ?? "",
+            Amount = amount is > 0 ? amount : null,
+            Remarks = remarks is { Length: > 0 } r ? r[..Math.Min(r.Length, 60)] : null,
+            RequestId = Guid.NewGuid(),
+        };
+        ViewBag.FromAssistant = src == "assistant";
         await FillAsync(model, ct);
         if (model.FromAccountId is null && model.Accounts.Count > 0)
             model.FromAccountId = model.Accounts[0].Id;

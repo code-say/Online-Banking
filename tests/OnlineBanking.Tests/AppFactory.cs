@@ -11,14 +11,19 @@ using OnlineBanking.Web.Services;
 namespace OnlineBanking.Tests;
 
 /// <summary>Runs the real app in memory against a throwaway SQLite file with the demo seed data.</summary>
-public sealed partial class AppFactory : WebApplicationFactory<Program>
+public partial class AppFactory : WebApplicationFactory<Program>
 {
     private readonly string _dbPath = Path.Combine(Path.GetTempPath(), $"onlinebanking-test-{Guid.NewGuid():N}.db");
+
+    /// <summary>Extra configuration, e.g. ["Assistant:DailyMessageLimit"] = "2". Set before the first request.</summary>
+    public Dictionary<string, string> Settings { get; } = [];
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Default", $"Data Source={_dbPath}");
+        foreach (var (key, value) in Settings)
+            builder.UseSetting(key, value);
     }
 
     /// <summary>A browser-like client: keeps cookies, doesn't follow redirects (so tests can assert them).</summary>

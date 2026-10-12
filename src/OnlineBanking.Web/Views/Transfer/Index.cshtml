@@ -6,6 +6,10 @@
     <div class="card">
         <h1>Send money</h1>
         <p class="muted">Transfer instantly to any account at the bank, including your own.</p>
+        @if (ViewBag.FromAssistant == true && Model.HasPin)
+        {
+            <div class="alert alert-info">The assistant filled this in for you. Check every detail, then enter your PIN to send. Nothing has been sent yet.</div>
+        }
 
         @if (Model.Accounts.Count == 0)
         {

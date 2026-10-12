@@ -7,3 +7,8 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     autoDeploy: true
+    envVars:
+      # Google AI Studio (Gemini) key for the banking assistant. Set it in the Render dashboard; never commit it.
+      # Without it the site works normally and the chat panel is simply hidden.
+      - key: Assistant__ApiKey
+        sync: false
