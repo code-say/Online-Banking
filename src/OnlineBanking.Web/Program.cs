@@ -19,7 +19,10 @@ builder.Services.AddControllersWithViews(o =>
     // Every POST form must carry the antiforgery token (CSRF protection)
     o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
     o.Filters.Add<NotFoundFilter>();
-});
+})
+// Validation runs on the server only; this also stops the empty <li style="display:none"> placeholder,
+// which the Content-Security-Policy (no inline styles) would block
+.AddViewOptions(o => o.HtmlHelperOptions.ClientValidationEnabled = false);
 
 // Read the connection string lazily so tests and hosting can override it
 builder.Services.AddDbContext<AppDbContext>((sp, o) =>
