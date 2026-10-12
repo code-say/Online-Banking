@@ -24,9 +24,9 @@
             }
             <form asp-action="SetPin" method="post" class="form" novalidate>
                 <div class="field">
-                    <label asp-for="Pin.Pin"></label>
-                    <input asp-for="Pin.Pin" class="pin" inputmode="numeric" maxlength="4" autocomplete="off" />
-                    <span asp-validation-for="Pin.Pin" class="field-validation-error"></span>
+                    <label asp-for="Pin.NewPin"></label>
+                    <input asp-for="Pin.NewPin" class="pin" inputmode="numeric" maxlength="4" autocomplete="off" />
+                    <span asp-validation-for="Pin.NewPin" class="field-validation-error"></span>
                 </div>
                 <div class="field">
                     <label asp-for="Pin.ConfirmPin"></label>

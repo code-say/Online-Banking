@@ -56,9 +56,9 @@ public sealed class SetPinViewModel
     public string CurrentPassword { get; set; } = "";
 
     [Required, RegularExpression(@"^\d{4}$", ErrorMessage = "Enter exactly 4 digits."), DataType(DataType.Password), Display(Name = "New 4-digit PIN")]
-    public string Pin { get; set; } = "";
+    public string NewPin { get; set; } = "";
 
-    [Required, Compare(nameof(Pin), ErrorMessage = "The PINs don't match."), DataType(DataType.Password), Display(Name = "Confirm PIN")]
+    [Required, Compare(nameof(NewPin), ErrorMessage = "The PINs don't match."), DataType(DataType.Password), Display(Name = "Confirm PIN")]
     public string ConfirmPin { get; set; } = "";
 }
 

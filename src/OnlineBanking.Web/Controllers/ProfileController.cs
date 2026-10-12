@@ -15,38 +15,38 @@ public class ProfileController(AppDbContext db, AuthService auth, BankingService
     public async Task<IActionResult> Index(CancellationToken ct) => View(await BuildAsync(null, null, ct));
 
     [HttpPost]
-    public async Task<IActionResult> ChangePassword([Bind(Prefix = "Password")] ChangePasswordViewModel model, CancellationToken ct)
+    public async Task<IActionResult> ChangePassword([Bind(Prefix = "Password")] ChangePasswordViewModel form, CancellationToken ct)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                await auth.ChangePasswordAsync(User.GetUserId(), model.CurrentPassword, model.NewPassword, ct);
+                await auth.ChangePasswordAsync(User.GetUserId(), form.CurrentPassword, form.NewPassword, ct);
                 TempData.Flash("Password changed.");
                 return RedirectToAction(nameof(Index));
             }
             catch (BankingException ex)
             {
-                ModelState.AddModelError("Password." + nameof(model.CurrentPassword), ex.Message);
+                ModelState.AddModelError("Password." + nameof(form.CurrentPassword), ex.Message);
             }
         }
         return View(nameof(Index), await BuildAsync(new ChangePasswordViewModel(), null, ct));
     }
 
     [HttpPost]
-    public async Task<IActionResult> SetPin([Bind(Prefix = "Pin")] SetPinViewModel model, CancellationToken ct)
+    public async Task<IActionResult> SetPin([Bind(Prefix = "Pin")] SetPinViewModel form, CancellationToken ct)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                await banking.SetPinAsync(User.GetUserId(), model.CurrentPassword, model.Pin, ct);
+                await banking.SetPinAsync(User.GetUserId(), form.CurrentPassword, form.NewPin, ct);
                 TempData.Flash("Transaction PIN saved. You'll need it for every transfer.");
                 return RedirectToAction(nameof(Index));
             }
             catch (BankingException ex)
             {
-                ModelState.AddModelError("Pin." + nameof(model.Pin), ex.Message);
+                ModelState.AddModelError("Pin." + nameof(form.NewPin), ex.Message);
             }
         }
         return View(nameof(Index), await BuildAsync(null, new SetPinViewModel(), ct));

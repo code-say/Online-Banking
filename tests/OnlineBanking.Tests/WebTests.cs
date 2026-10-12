@@ -176,8 +176,10 @@ public class WebTests
         var approve = await AppFactory.PostFormAsync(admin, $"/Admin/Applications/Approve/{appId}",
             new() { ["openingDeposit"] = "5000", ["note"] = "KYC verified." }, formPage: $"/Admin/Applications/Details/{appId}");
         Assert.Equal(HttpStatusCode.Redirect, approve.StatusCode);
+        Assert.StartsWith("/Admin/Accounts/Details/", approve.Headers.Location!.OriginalString);
 
         var dashboard = await customer.GetStringAsync("/Dashboard");
-        Assert.Contains("₹5,000.00", dashboard);
+        var main = dashboard[dashboard.IndexOf("<main", StringComparison.Ordinal)..];
+        Assert.True(main.Contains("₹5,000.00"), main[..Math.Min(main.Length, 3000)]);
     }
 }

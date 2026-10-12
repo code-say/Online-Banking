@@ -47,7 +47,7 @@
                     var credit = Format.IsCredit(t.Type);
                     <tr>
                         <td class="nowrap">@Format.DateAndTime(t.CreatedAt)</td>
-                        <td><a asp-controller="Accounts" asp-action="Details" asp-route-id="@t.AccountId">@(t.Account!.User!.FullName)</a><div class="tx-meta mono">@Format.AccountNumber(t.Account.AccountNumber)</div></td>
+                        <td><a asp-controller="Accounts" asp-action="Details" asp-route-id="@t.AccountId">@(t.Account!.User!.FullName)</a><div class="tx-meta mono">@Format.AccountNumber(t.Account!.AccountNumber)</div></td>
                         <td><div class="tx-desc">@t.Description</div><div class="tx-meta">@Format.Counterparty(t)</div></td>
                         <td class="mono small muted">@t.Reference</td>
                         <td class="amount @(credit ? "credit" : "debit")">@Format.Signed(t)</td>
