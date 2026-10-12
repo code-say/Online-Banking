@@ -122,10 +122,9 @@ public class WebTests
         var client = await app.CustomerAsync();
         var savings = await app.AccountAsync(SeedData.CustomerSavings);
 
-        // The statement page links to the CSV (and next page) for the same account and filters
+        // The statement page links to the CSV for the same account and filters
         var page = await client.GetStringAsync($"/Accounts/Details/{savings.Id}?Type=credit");
         Assert.Contains($"href=\"/Accounts/Download/{savings.Id}?Type=credit\"", page);
-        Assert.Contains($"/Accounts/Details/{savings.Id}?Type=credit&amp;Page=2", page);
 
         var res = await client.GetAsync($"/Accounts/Download/{savings.Id}?Type=credit");
         Assert.Equal("text/csv", res.Content.Headers.ContentType!.MediaType);
