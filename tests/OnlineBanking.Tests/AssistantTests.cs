@@ -42,6 +42,7 @@ public sealed class ScriptedChatClient : IChatClient
             {
                 ["fromAccount"] = "3456", ["toAccountNumber"] = "5010 0098 7654", ["amount"] = 500, ["remarks"] = "Books",
             }),
+            _ when text.Contains("busy") => throw new InvalidOperationException("wrapper", new HttpRequestException("429 RESOURCE_EXHAUSTED: quota exceeded")),
             _ when text.Contains("explode") => throw new HttpRequestException("provider said: key=SECRET-123 invalid"),
             _ => Text($"ECHO {text} (system prompt: {list.Count(m => m.Role == ChatRole.System)}, turns: {list.Count(m => m.Role != ChatRole.System)}, tools: {options?.Tools?.Count ?? 0})"),
         };
@@ -201,6 +202,17 @@ public class AssistantTests
         Assert.Equal(HttpStatusCode.ServiceUnavailable, res.StatusCode);
         Assert.DoesNotContain("SECRET", Reply(body));
         Assert.Contains("unavailable right now", Reply(body));
+    }
+
+    [Fact]
+    public async Task Provider_quota_errors_ask_the_customer_to_wait()
+    {
+        using var app = new AssistantAppFactory();
+        var client = await app.CustomerAsync();
+        var (res, body) = await AskAsync(client, "are you busy");
+        Assert.Equal(HttpStatusCode.TooManyRequests, res.StatusCode);
+        Assert.Contains("wait about a minute", Reply(body));
+        Assert.DoesNotContain("RESOURCE_EXHAUSTED", Reply(body));
     }
 
     [Fact]
