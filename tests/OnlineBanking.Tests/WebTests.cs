@@ -179,7 +179,8 @@ public class WebTests
         Assert.StartsWith("/Admin/Accounts/Details/", approve.Headers.Location!.OriginalString);
 
         var dashboard = await customer.GetStringAsync("/Dashboard");
-        var main = dashboard[dashboard.IndexOf("<main", StringComparison.Ordinal)..];
-        Assert.True(main.Contains("₹5,000.00"), main[..Math.Min(main.Length, 3000)]);
+        var at = Math.Max(0, dashboard.IndexOf("grid-cards", StringComparison.Ordinal));
+        var snippet = dashboard.Substring(at, Math.Min(900, dashboard.Length - at)).Replace('\n', ' ');
+        Assert.True(dashboard.Contains("₹5,000.00"), "DASHBOARD SNIPPET: " + snippet);
     }
 }

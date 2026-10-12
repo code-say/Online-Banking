@@ -1,7 +1,10 @@
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.WebEncoders;
 using OnlineBanking.Web.Data;
 using OnlineBanking.Web.Entities;
 using OnlineBanking.Web.Infrastructure;
@@ -21,6 +24,9 @@ builder.Services.AddControllersWithViews(o =>
 // Read the connection string lazily so tests and hosting can override it
 builder.Services.AddDbContext<AppDbContext>((sp, o) =>
     o.UseSqlite(sp.GetRequiredService<IConfiguration>().GetConnectionString("Default") ?? "Data Source=onlinebanking.db"));
+
+// Write ₹ and Indian-language names as-is in HTML instead of &#x20B9; escapes
+builder.Services.Configure<WebEncoderOptions>(o => o.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
 builder.Services.AddOptions<BankingOptions>().BindConfiguration(BankingOptions.Section);
 builder.Services.AddSingleton(TimeProvider.System);
