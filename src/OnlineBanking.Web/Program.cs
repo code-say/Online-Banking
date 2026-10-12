@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Google.GenAI;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.WebEncoders;
+using OnlineBanking.Web.Services.Assistant;
 using OnlineBanking.Web.Data;
 using OnlineBanking.Web.Entities;
 using OnlineBanking.Web.Infrastructure;
@@ -36,6 +40,26 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<BankingService>();
+
+// AI assistant (Gemini through Microsoft.Extensions.AI). Switched on only when an API key is configured
+// (Assistant__ApiKey environment variable); without one, the chat panel simply isn't shown.
+builder.Services.AddMemoryCache();
+builder.Services.AddOptions<AssistantOptions>().BindConfiguration(AssistantOptions.Section);
+builder.Services.AddScoped<AssistantTools>();
+builder.Services.AddScoped<BankingAssistant>();
+var assistantKey = builder.Configuration[$"{AssistantOptions.Section}:ApiKey"];
+if (!string.IsNullOrWhiteSpace(assistantKey))
+{
+    builder.Services
+        .AddChatClient(sp => new Google.GenAI.Client(apiKey: assistantKey)
+            .AsIChatClient(sp.GetRequiredService<IOptions<AssistantOptions>>().Value.Model))
+        .UseFunctionInvocation(configure: f =>
+        {
+            f.MaximumIterationsPerRequest = 6;     // tool round-trips per message
+            f.MaximumConsecutiveErrorsPerRequest = 2;
+            f.IncludeDetailedErrors = false;       // never put stack traces into the prompt
+        });
+}
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(o =>

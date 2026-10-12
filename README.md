@@ -26,6 +26,14 @@ The demo customer's transaction PIN is `2580`. Try sending money to account `501
 - Fund transfers to any account in the bank, with a masked beneficiary-name check, a transaction PIN and a printable receipt
 - Profile: change password, set or change the transaction PIN
 
+**Banking Assistant (AI agent)**
+- A chat panel on customer pages: "What's my balance?", "How much did I spend last month?", "Send ₹500 to 5010 0098 7654"
+- Built on **Microsoft.Extensions.AI** (`IChatClient` + function calling) with **Google Gemini** through Google's `Google.GenAI` .NET SDK; swapping providers is a one-line change in `Program.cs`
+- Tools call the same `BankingService` the pages use, always scoped to the signed-in customer: `get_accounts`, `get_transactions`, `get_spending_summary`, `lookup_payee`, `prepare_transfer`
+- **The agent can't move money.** `prepare_transfer` validates the transfer and shows a confirmation card; the customer reviews it on the Transfer page and enters their PIN themselves. The model never sees PINs or passwords
+- Guardrails: transaction remarks written by other customers are marked as untrusted data (prompt-injection defence); conversation history is kept on the server, not trusted from the browser; per-customer daily message limit; provider errors are logged, never shown
+- Tests drive the real function-calling pipeline with a scripted `IChatClient`, so CI needs no API key
+
 **Bank admin** (`/Admin`)
 - Overview: customers, accounts, total deposits, today's volume, latest transactions
 - Review applications: approve (opens the account with a new number and an opening deposit) or reject with a reason
@@ -57,6 +65,7 @@ All money movement goes through `BankingService`:
 | Layer | Technology |
 |---|---|
 | Web | ASP.NET Core MVC (.NET 10), Razor views, tag helpers, an Admin area |
+| AI | Microsoft.Extensions.AI (function calling), Google Gemini via Google.GenAI |
 | Data | Entity Framework Core, SQLite |
 | UI | Hand-written CSS and a little vanilla JavaScript (every page works without it) |
 | Tests | xUnit with `WebApplicationFactory` (banking rules + HTTP flows), Playwright end-to-end flow |
@@ -69,6 +78,7 @@ src/OnlineBanking.Web/
   Controllers/        Home, Account (sign in/up), Dashboard, Accounts (statements), Transfer, Applications, Profile
   Areas/Admin/        Dashboard, Applications, Accounts, Customers, Messages (controllers + views)
   Services/           BankingService (all money rules), AuthService
+  Services/Assistant/ BankingAssistant (prompt, history, limits), AssistantTools (the agent's functions)
   Entities/  Data/    EF Core model, DbContext, demo seed data
   Models/             View models with validation
   Views/              Razor views
@@ -85,6 +95,12 @@ Requires the .NET 10 SDK.
 ```bash
 dotnet run --project src/OnlineBanking.Web
 # http://localhost:5090
+```
+
+To switch on the assistant, create a free API key in [Google AI Studio](https://aistudio.google.com/apikey) and set it before running (the model can be changed with `Assistant__Model`, default `gemini-3.8-flash`):
+
+```bash
+export Assistant__ApiKey="your-key"     # PowerShell: $env:Assistant__ApiKey="your-key"
 ```
 
 Run the tests with `dotnet test`.
