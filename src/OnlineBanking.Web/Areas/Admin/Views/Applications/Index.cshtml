@@ -1,0 +1,45 @@
+@model List<AccountApplication>
+@{
+    ViewData["Title"] = "Applications";
+    var current = ViewBag.Status as ApplicationStatus?;
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Admin console</p>
+        <h1>Account applications</h1>
+    </div>
+    <nav class="segmented" aria-label="Filter by status">
+        <a class="@(current == ApplicationStatus.Pending ? "on" : "")" asp-action="Index" asp-route-status="Pending">Pending</a>
+        <a class="@(current == ApplicationStatus.Approved ? "on" : "")" asp-action="Index" asp-route-status="Approved">Approved</a>
+        <a class="@(current == ApplicationStatus.Rejected ? "on" : "")" asp-action="Index" asp-route-status="Rejected">Rejected</a>
+        <a class="@(current is null ? "on" : "")" asp-action="Index" asp-route-status="all">All</a>
+    </nav>
+</div>
+
+<div class="card">
+    @if (Model.Count == 0)
+    {
+        <div class="empty"><h3>Nothing here</h3><p>No @(current?.ToString().ToLowerInvariant() ?? "") applications.</p></div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Applicant</th><th>Type</th><th>City</th><th>Submitted</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+                            <td><strong>@a.Title @a.FirstName @a.LastName</strong><div class="tx-meta">@(a.User!.Email)</div></td>
+                            <td>@a.AccountType</td>
+                            <td>@a.City</td>
+                            <td class="nowrap">@Format.DateAndTime(a.SubmittedAt)</td>
+                            <td><span class="@Format.BadgeClass(a.Status)">@a.Status</span></td>
+                            <td class="right"><a class="btn btn-ghost btn-sm" asp-action="Details" asp-route-id="@a.Id">@(a.Status == ApplicationStatus.Pending ? "Review" : "View")</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

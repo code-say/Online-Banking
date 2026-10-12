@@ -1,0 +1,10 @@
+@model Account
+@{
+    var css = "acct" + (Model.Type == AccountType.Current ? " current" : "") + (Model.Status != AccountStatus.Active ? " frozen" : "");
+}
+<a class="@css" asp-area="" asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Id" aria-label="@Model.Type account @Format.Masked(Model.AccountNumber)">
+    <div class="acct-top"><span>@Model.Type account</span><span>@Model.Status</span></div>
+    <div class="acct-balance mono">@Format.Money(Model.Balance)</div>
+    <div class="acct-number">@Format.AccountNumber(Model.AccountNumber)</div>
+    <div class="acct-links"><span>Statement →</span></div>
+</a>

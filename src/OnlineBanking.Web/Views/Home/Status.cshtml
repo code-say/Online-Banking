@@ -1,0 +1,11 @@
+@model int
+@{
+    var notFound = Model == 404;
+    ViewData["Title"] = notFound ? "Page not found" : $"Error {Model}";
+}
+<div class="narrow card empty">
+    <p class="eyebrow">@Model</p>
+    <h1>@(notFound ? "We couldn't find that page" : "Something went wrong")</h1>
+    <p>@(notFound ? "The link may be old, or the record doesn't belong to your login." : "Please try again in a moment.")</p>
+    <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Index">Go to home</a>
+</div>

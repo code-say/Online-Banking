@@ -1,0 +1,9 @@
+# Render Blueprint: the whole ASP.NET Core MVC app (pages + data) as one free Docker web service.
+services:
+  - type: web
+    name: online-banking
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true

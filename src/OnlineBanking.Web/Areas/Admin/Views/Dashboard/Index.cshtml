@@ -1,0 +1,59 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Bank overview";
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Admin console</p>
+        <h1>Bank overview</h1>
+    </div>
+    <div class="actions">
+        <a class="btn btn-primary" asp-controller="Applications" asp-action="Index">Review applications</a>
+    </div>
+</div>
+
+<div class="stats">
+    <a class="stat @(Model.PendingApplications > 0 ? "attention" : "")" asp-controller="Applications" asp-action="Index">
+        <div class="label">Pending applications</div><div class="value">@Model.PendingApplications</div>
+    </a>
+    <a class="stat" asp-controller="Customers" asp-action="Index">
+        <div class="label">Customers</div><div class="value">@Model.Customers</div>
+    </a>
+    <a class="stat" asp-controller="Accounts" asp-action="Index">
+        <div class="label">Active accounts</div><div class="value">@Model.ActiveAccounts</div>
+    </a>
+    <a class="stat @(Model.FrozenAccounts > 0 ? "attention" : "")" asp-controller="Accounts" asp-action="Index" asp-route-status="Frozen">
+        <div class="label">Frozen accounts</div><div class="value">@Model.FrozenAccounts</div>
+    </a>
+    <div class="stat">
+        <div class="label">Total deposits</div><div class="value mono">@Format.Money(Model.TotalDeposits)</div>
+    </div>
+    <div class="stat">
+        <div class="label">Transactions today</div><div class="value">@Model.TransactionsToday <span class="muted small mono">@Format.Money(Model.VolumeToday)</span></div>
+    </div>
+    <a class="stat @(Model.UnreadMessages > 0 ? "attention" : "")" asp-controller="Messages" asp-action="Index">
+        <div class="label">Unread messages</div><div class="value">@Model.UnreadMessages</div>
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-head"><h2>Latest transactions</h2></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Date</th><th>Account</th><th>Description</th><th>Reference</th><th class="amount">Amount</th></tr></thead>
+            <tbody>
+                @foreach (var t in Model.Recent)
+                {
+                    var credit = Format.IsCredit(t.Type);
+                    <tr>
+                        <td class="nowrap">@Format.DateAndTime(t.CreatedAt)</td>
+                        <td><a asp-controller="Accounts" asp-action="Details" asp-route-id="@t.AccountId">@(t.Account!.User!.FullName)</a><div class="tx-meta mono">@Format.AccountNumber(t.Account.AccountNumber)</div></td>
+                        <td><div class="tx-desc">@t.Description</div><div class="tx-meta">@Format.Counterparty(t)</div></td>
+                        <td class="mono small muted">@t.Reference</td>
+                        <td class="amount @(credit ? "credit" : "debit")">@Format.Signed(t)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

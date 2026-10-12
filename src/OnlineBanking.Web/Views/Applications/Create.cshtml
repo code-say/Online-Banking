@@ -1,0 +1,149 @@
+@model ApplicationViewModel
+@{
+    ViewData["Title"] = "Open an account";
+    string[] titles = ["Mr", "Ms", "Mrs", "Dr"];
+    string[] sources = ["Salary", "Business", "Professional practice", "Pension", "Investments", "Student / dependent", "Other"];
+    string[] states = ["Andhra Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Odisha", "Punjab", "Rajasthan", "Tamil Nadu", "Telangana", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Other"];
+}
+<div class="mid">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Account opening</p>
+            <h1>Open a bank account</h1>
+            <p class="muted">Fill in your details as they appear on your KYC documents.</p>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" class="stack" data-once novalidate>
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors" role="alert"></div>
+
+        <div class="card">
+            <fieldset class="form">
+                <legend>Account</legend>
+                <div class="form-grid">
+                    <label class="check"><input type="radio" asp-for="AccountType" value="Savings" /> <span><strong>Savings account</strong><br /><span class="muted small">For personal savings and salary</span></span></label>
+                    <label class="check"><input type="radio" asp-for="AccountType" value="Current" /> <span><strong>Current account</strong><br /><span class="muted small">For business and frequent payments</span></span></label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="card">
+            <fieldset class="form">
+                <legend>Personal details</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="Salutation"></label>
+                        <select asp-for="Salutation">@foreach (var t in titles) { <option>@t</option> }</select>
+                    </div>
+                    <div class="field">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" autocomplete="given-name" />
+                        <span asp-validation-for="FirstName" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="MiddleName"></label>
+                        <input asp-for="MiddleName" autocomplete="additional-name" />
+                    </div>
+                    <div class="field">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" autocomplete="family-name" />
+                        <span asp-validation-for="LastName" class="field-validation-error"></span>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="FatherName"></label>
+                        <input asp-for="FatherName" />
+                        <span asp-validation-for="FatherName" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="DateOfBirth"></label>
+                        <input asp-for="DateOfBirth" type="date" autocomplete="bday" />
+                        <span asp-validation-for="DateOfBirth" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Mobile"></label>
+                        <input asp-for="Mobile" autocomplete="tel" />
+                        <span asp-validation-for="Mobile" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Aadhaar"></label>
+                        <input asp-for="Aadhaar" inputmode="numeric" maxlength="14" autocomplete="off" placeholder="XXXX XXXX XXXX" />
+                        <span class="hint">Only the last 4 digits are stored.</span>
+                        <span asp-validation-for="Aadhaar" class="field-validation-error"></span>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="card">
+            <fieldset class="form">
+                <legend>Address</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="AddressLine1"></label>
+                        <input asp-for="AddressLine1" autocomplete="address-line1" />
+                        <span asp-validation-for="AddressLine1" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="AddressLine2"></label>
+                        <input asp-for="AddressLine2" autocomplete="address-line2" />
+                    </div>
+                    <div class="field">
+                        <label asp-for="Landmark"></label>
+                        <input asp-for="Landmark" />
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="City"></label>
+                        <input asp-for="City" autocomplete="address-level2" />
+                        <span asp-validation-for="City" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="State"></label>
+                        <select asp-for="State">
+                            <option value="">Choose…</option>
+                            @foreach (var s in states) { <option>@s</option> }
+                        </select>
+                        <span asp-validation-for="State" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Pincode"></label>
+                        <input asp-for="Pincode" inputmode="numeric" maxlength="6" autocomplete="postal-code" />
+                        <span asp-validation-for="Pincode" class="field-validation-error"></span>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="card">
+            <fieldset class="form">
+                <legend>Occupation and income</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="Occupation"></label>
+                        <input asp-for="Occupation" autocomplete="organization-title" />
+                        <span asp-validation-for="Occupation" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="SourceOfIncome"></label>
+                        <select asp-for="SourceOfIncome">@foreach (var s in sources) { <option>@s</option> }</select>
+                    </div>
+                    <div class="field">
+                        <label asp-for="AnnualIncome"></label>
+                        <input asp-for="AnnualIncome" type="number" min="0" step="1000" inputmode="decimal" />
+                        <span asp-validation-for="AnnualIncome" class="field-validation-error"></span>
+                    </div>
+                </div>
+                <label class="check"><input asp-for="Confirm" /> <span>I confirm these details are correct and match my KYC documents.</span></label>
+                <span asp-validation-for="Confirm" class="field-validation-error"></span>
+            </fieldset>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" type="submit" data-busy="Submitting…">Submit application</button>
+            <a class="btn btn-ghost" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>

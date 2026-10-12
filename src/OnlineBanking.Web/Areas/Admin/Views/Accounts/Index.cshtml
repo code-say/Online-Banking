@@ -1,0 +1,59 @@
+@model List<Account>
+@{
+    ViewData["Title"] = "Accounts";
+    var status = ViewBag.Status as AccountStatus?;
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Admin console</p>
+        <h1>Accounts</h1>
+    </div>
+</div>
+
+<div class="card">
+    <form method="get" class="filters" asp-action="Index">
+        <div class="field">
+            <label for="q">Search</label>
+            <input id="q" name="q" value="@ViewBag.Q" placeholder="Name, email or account number" />
+        </div>
+        <div class="field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">Any</option>
+                @foreach (var s in Enum.GetValues<AccountStatus>())
+                {
+                    <option value="@s" selected="@(status == s)">@s</option>
+                }
+            </select>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary btn-sm" type="submit">Search</button>
+            <a class="btn btn-ghost btn-sm" asp-action="Index">Reset</a>
+        </div>
+    </form>
+
+    @if (Model.Count == 0)
+    {
+        <div class="empty"><h3>No accounts found</h3></div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Account</th><th>Holder</th><th>Type</th><th>Status</th><th class="amount">Balance</th></tr></thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+                            <td><a class="mono" asp-action="Details" asp-route-id="@a.Id">@Format.AccountNumber(a.AccountNumber)</a></td>
+                            <td>@(a.User!.FullName)<div class="tx-meta">@a.User.Email</div></td>
+                            <td>@a.Type</td>
+                            <td><span class="@Format.BadgeClass(a.Status)">@a.Status</span></td>
+                            <td class="amount">@Format.Money(a.Balance)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

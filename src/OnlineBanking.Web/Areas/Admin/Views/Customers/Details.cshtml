@@ -1,0 +1,60 @@
+@model User
+@{
+    ViewData["Title"] = Model.FullName;
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Customer</p>
+        <h1>@Model.FullName</h1>
+        <p class="muted">@Model.Email · @Model.Phone · Joined @Format.Date(Model.CreatedAt) · PIN @(Model.TransactionPinHash is null ? "not set" : "set")</p>
+    </div>
+    <a class="btn btn-ghost" asp-action="Index">All customers</a>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h2>Accounts</h2>
+        @if (Model.Accounts.Count == 0)
+        {
+            <p class="muted">No accounts yet.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Account</th><th>Type</th><th>Status</th><th class="amount">Balance</th></tr></thead>
+                    <tbody>
+                        @foreach (var a in Model.Accounts.OrderBy(x => x.OpenedAt))
+                        {
+                            <tr>
+                                <td><a class="mono" asp-controller="Accounts" asp-action="Details" asp-route-id="@a.Id">@Format.AccountNumber(a.AccountNumber)</a></td>
+                                <td>@a.Type</td>
+                                <td><span class="@Format.BadgeClass(a.Status)">@a.Status</span></td>
+                                <td class="amount">@Format.Money(a.Balance)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+    <div class="card">
+        <h2>Applications</h2>
+        @if (Model.Applications.Count == 0)
+        {
+            <p class="muted">None.</p>
+        }
+        else
+        {
+            <ul class="tx-list">
+                @foreach (var app in Model.Applications.OrderByDescending(x => x.SubmittedAt))
+                {
+                    <li>
+                        <div><a asp-controller="Applications" asp-action="Details" asp-route-id="@app.Id">@app.AccountType account</a><div class="tx-meta">@Format.Date(app.SubmittedAt)</div></div>
+                        <span class="@Format.BadgeClass(app.Status)">@app.Status</span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

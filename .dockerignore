@@ -1,0 +1,7 @@
+**/bin
+**/obj
+**/*.db
+tests
+e2e
+.git
+.github

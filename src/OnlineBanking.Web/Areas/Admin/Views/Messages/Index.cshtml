@@ -1,0 +1,37 @@
+@model List<ContactMessage>
+@{
+    ViewData["Title"] = "Messages";
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Admin console</p>
+        <h1>Customer messages</h1>
+        <p class="muted">From the Contact us form.</p>
+    </div>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="card empty"><h3>Inbox zero</h3></div>
+}
+else
+{
+    <div class="stack">
+        @foreach (var m in Model)
+        {
+            <article class="card">
+                <div class="card-head">
+                    <div>
+                        <h3>@m.Subject @if (!m.IsRead) { <span class="badge badge-unread">New</span> }</h3>
+                        <p class="muted small mb-0">@m.Name · <a href="mailto:@m.Email?subject=Re: @Uri.EscapeDataString(m.Subject)">@m.Email</a> · @Format.DateAndTime(m.CreatedAt)</p>
+                    </div>
+                    <form asp-action="MarkRead" asp-route-id="@m.Id" method="post">
+                        <input type="hidden" name="read" value="@(m.IsRead ? "false" : "true")" />
+                        <button class="btn btn-ghost btn-sm" type="submit">@(m.IsRead ? "Mark unread" : "Mark read")</button>
+                    </form>
+                </div>
+                <p class="mb-0">@m.Message</p>
+            </article>
+        }
+    </div>
+}

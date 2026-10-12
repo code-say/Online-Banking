@@ -1,0 +1,23 @@
+@model ReceiptViewModel
+@{
+    var t = Model.Transaction;
+    ViewData["Title"] = "Transfer successful";
+}
+<div class="narrow card receipt">
+    <div class="tick" aria-hidden="true">✓</div>
+    <h1>Money sent</h1>
+    <div class="amount-big mono">@Format.Money(t.Amount)</div>
+    <dl class="dl">
+        <dt>To</dt><dd>@t.CounterpartyName<br /><span class="muted mono">@Format.AccountNumber(t.CounterpartyAccountNumber)</span></dd>
+        <dt>From</dt><dd>@Model.From.Type account <span class="mono">@Format.Masked(Model.From.AccountNumber)</span></dd>
+        <dt>Remarks</dt><dd>@t.Description</dd>
+        <dt>Date</dt><dd>@Format.DateAndTime(t.CreatedAt)</dd>
+        <dt>Reference</dt><dd class="mono">@t.Reference</dd>
+        <dt>Balance after</dt><dd class="mono">@Format.Money(t.BalanceAfter)</dd>
+    </dl>
+    <div class="actions no-print">
+        <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Back to dashboard</a>
+        <a class="btn btn-ghost" asp-controller="Transfer" asp-action="Index">Send more</a>
+        <button class="btn btn-ghost" type="button" data-print>Print receipt</button>
+    </div>
+</div>

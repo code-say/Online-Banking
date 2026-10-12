@@ -1,0 +1,88 @@
+@{
+    var signedIn = User.Identity?.IsAuthenticated == true;
+    var admin = signedIn && User.IsAdmin();
+    var area = ViewContext.RouteData.Values["area"] as string;
+    var controller = ViewContext.RouteData.Values["controller"] as string;
+    string Active(string c, string? a = null) => string.Equals(controller, c, StringComparison.OrdinalIgnoreCase) && string.Equals(area ?? "", a ?? "", StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@(ViewData["Title"] is string t ? $"{t} · Online Banking" : "Online Banking")</title>
+    <meta name="description" content="Online Banking demo built with ASP.NET Core MVC: accounts, statements, fund transfers with a transaction PIN, and a bank admin console." />
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="@(admin ? "is-admin" : "")">
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <a class="brand" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Online Banking home">
+                <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor" /><path d="M8 13 16 8l8 5v1H8zM10 15h2.5v7H10zM14.75 15h2.5v7h-2.5zM19.5 15H22v7h-2.5zM8 23h16v2H8z" fill="#fff" /></svg>
+                <span>Online<strong>Banking</strong></span>
+                @if (admin) { <span class="tag">Admin</span> }
+            </a>
+
+            <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu" />
+            <label for="nav-toggle" class="nav-burger" aria-hidden="true"><span></span></label>
+
+            <nav class="nav" aria-label="Main">
+                @if (admin)
+                {
+                    <a class="@Active("Dashboard", "Admin")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Overview</a>
+                    <a class="@Active("Applications", "Admin")" asp-area="Admin" asp-controller="Applications" asp-action="Index">Applications</a>
+                    <a class="@Active("Accounts", "Admin")" asp-area="Admin" asp-controller="Accounts" asp-action="Index">Accounts</a>
+                    <a class="@Active("Customers", "Admin")" asp-area="Admin" asp-controller="Customers" asp-action="Index">Customers</a>
+                    <a class="@Active("Messages", "Admin")" asp-area="Admin" asp-controller="Messages" asp-action="Index">Messages</a>
+                }
+                else if (signedIn)
+                {
+                    <a class="@Active("Dashboard")" asp-area="" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    <a class="@Active("Transfer")" asp-area="" asp-controller="Transfer" asp-action="Index">Transfer</a>
+                    <a class="@Active("Applications")" asp-area="" asp-controller="Applications" asp-action="Index">Open account</a>
+                    <a class="@Active("Home")" asp-area="" asp-controller="Home" asp-action="Contact">Help</a>
+                }
+                else
+                {
+                    <a class="@Active("Home")" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                }
+
+                <div class="nav-user">
+                    @if (signedIn)
+                    {
+                        <a class="@Active("Profile")" asp-area="" asp-controller="Profile" asp-action="Index" title="Profile and security">@User.DisplayName()</a>
+                        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                            <button class="btn btn-ghost btn-sm" type="submit">Sign out</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="btn btn-ghost btn-sm" asp-area="" asp-controller="Account" asp-action="Login">Sign in</a>
+                        <a class="btn btn-primary btn-sm" asp-area="" asp-controller="Account" asp-action="Register">Open an account</a>
+                    }
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main" class="container main">
+        <partial name="_Flash" />
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p><strong>Online Banking</strong> · an ASP.NET Core MVC demo by <a href="https://github.com/code-say" target="_blank" rel="noopener">Sayan Mandal</a>.</p>
+            <p class="muted">Demo data only. Not a real bank, and no real money moves. <a href="https://github.com/code-say/Online-Banking" target="_blank" rel="noopener">Source on GitHub</a></p>
+        </div>
+    </footer>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
