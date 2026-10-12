@@ -90,6 +90,14 @@ public sealed class BankingAssistant(
         catch (Exception ex)
         {
             // Never show provider errors (they can contain request details); log them for the operator instead
+            if (IsQuotaError(ex))
+            {
+                // Free-tier models allow only a few requests per minute; each tool round-trip counts as one
+                logger.LogWarning("Assistant provider quota hit: {Message}", ex.Message);
+                return new(AssistantStatus.RateLimited,
+                    "I'm getting a lot of questions right now (this demo uses a free AI quota). Please wait about a minute and ask again.",
+                    RemainingToday: _opt.DailyMessageLimit - used);
+            }
             logger.LogError(ex, "Assistant call failed");
             return new(AssistantStatus.Unavailable, "The assistant is unavailable right now. Please try again in a minute.", RemainingToday: _opt.DailyMessageLimit - used);
         }
@@ -104,6 +112,23 @@ public sealed class BankingAssistant(
         cache.Set(HistoryKey(userId), history, new MemoryCacheEntryOptions { SlidingExpiration = HistoryLifetime });
 
         return new(AssistantStatus.Ok, reply, tools.Draft, _opt.DailyMessageLimit - used - 1);
+    }
+
+    /// <summary>Rate-limit or quota errors from the AI provider (HTTP 429 / RESOURCE_EXHAUSTED), wherever they're wrapped.</summary>
+    private static bool IsQuotaError(Exception ex)
+    {
+        for (var e = ex; e is not null; e = e.InnerException)
+        {
+            if (e is HttpRequestException { StatusCode: System.Net.HttpStatusCode.TooManyRequests })
+                return true;
+            var text = e.Message;
+            if (text.Contains("429", StringComparison.Ordinal) ||
+                text.Contains("RESOURCE_EXHAUSTED", StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("quota", StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("rate limit", StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
     }
 
     public void Reset(int userId) => cache.Remove(HistoryKey(userId));
