@@ -65,7 +65,7 @@ jobs:
       - name: Report e2e result
         if: always()
         run: |
-          grep -E "❌|console:|pageerror|URL:" e2e/e2e.log | head -10 | while read -r line; do echo "::error title=e2e::${line}"; done || true
+          grep -E "❌|console:|pageerror" e2e/e2e.log | head -10 | while read -r line; do echo "::error title=e2e::${line}"; done || true
           grep -E "✅" e2e/e2e.log | tail -10 | while read -r line; do echo "::notice title=e2e::${line}"; done || true
           grep -iE "fail|error|exception" app.log | head -15 | while read -r line; do echo "::warning title=app-log::${line}"; done || true
       - uses: actions/upload-artifact@v4
