@@ -4,7 +4,7 @@ An internet-banking site where customers open accounts, check balances and state
 
 [![CI](https://github.com/code-say/Online-Banking/actions/workflows/ci.yml/badge.svg)](https://github.com/code-say/Online-Banking/actions/workflows/ci.yml)
 
-- **Live demo:** _coming soon_
+- **Live demo:** https://online-banking.onrender.com
 
 > Hosted on Render's free tier, which sleeps when idle, so the first visit can take up to a minute. Demo data resets when the server restarts.
 
