@@ -1,0 +1,67 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile and security";
+    var u = Model.User;
+    var customer = u.Role == Roles.Customer;
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Profile</p>
+        <h1>@u.FullName</h1>
+        <p class="muted">@u.Email · @u.Phone · Member since @Format.Date(u.CreatedAt)</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    @if (customer)
+    {
+        <div class="card" id="pin">
+            <h2>Transaction PIN</h2>
+            <p class="muted">Your 4-digit PIN authorises every transfer. @(u.TransactionPinHash is null ? "You haven't set one yet." : "You can change it any time.")</p>
+            @if (u.PinLockedUntil is { } until && until > DateTime.UtcNow)
+            {
+                <div class="alert alert-warn">Transfers are locked after wrong PIN attempts until @Format.DateAndTime(until). Setting a new PIN unlocks them.</div>
+            }
+            <form asp-action="SetPin" method="post" class="form" novalidate>
+                <div class="field">
+                    <label asp-for="Pin.NewPin"></label>
+                    <input asp-for="Pin.NewPin" class="pin" inputmode="numeric" maxlength="4" autocomplete="off" />
+                    <span asp-validation-for="Pin.NewPin" class="field-validation-error"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Pin.ConfirmPin"></label>
+                    <input asp-for="Pin.ConfirmPin" class="pin" inputmode="numeric" maxlength="4" autocomplete="off" />
+                    <span asp-validation-for="Pin.ConfirmPin" class="field-validation-error"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Pin.CurrentPassword"></label>
+                    <input asp-for="Pin.CurrentPassword" autocomplete="current-password" />
+                    <span asp-validation-for="Pin.CurrentPassword" class="field-validation-error"></span>
+                </div>
+                <div><button class="btn btn-primary" type="submit">@(u.TransactionPinHash is null ? "Set PIN" : "Change PIN")</button></div>
+            </form>
+        </div>
+    }
+
+    <div class="card">
+        <h2>Password</h2>
+        <form asp-action="ChangePassword" method="post" class="form" novalidate>
+            <div class="field">
+                <label asp-for="Password.CurrentPassword"></label>
+                <input asp-for="Password.CurrentPassword" autocomplete="current-password" />
+                <span asp-validation-for="Password.CurrentPassword" class="field-validation-error"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Password.NewPassword"></label>
+                <input asp-for="Password.NewPassword" autocomplete="new-password" />
+                <span asp-validation-for="Password.NewPassword" class="field-validation-error"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Password.ConfirmPassword"></label>
+                <input asp-for="Password.ConfirmPassword" autocomplete="new-password" />
+                <span asp-validation-for="Password.ConfirmPassword" class="field-validation-error"></span>
+            </div>
+            <div><button class="btn btn-ghost" type="submit">Change password</button></div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+@model List<AccountApplication>
+@{
+    ViewData["Title"] = "Account applications";
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Accounts</p>
+        <h1>Your applications</h1>
+        <p class="muted">Apply for a savings or current account. The bank verifies your details and opens the account.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">New application</a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="card empty">
+        <h3>No applications yet</h3>
+        <p>It takes about two minutes.</p>
+        <a class="btn btn-primary" asp-action="Create">Apply for an account</a>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Account type</th><th>Submitted</th><th>Status</th><th>Details</th></tr></thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+                            <td><strong>@a.AccountType</strong></td>
+                            <td class="nowrap">@Format.Date(a.SubmittedAt)</td>
+                            <td><span class="@Format.BadgeClass(a.Status)">@a.Status</span></td>
+                            <td>
+                                @if (a.Status == ApplicationStatus.Approved && a.Account is not null)
+                                {
+                                    <a asp-controller="Accounts" asp-action="Details" asp-route-id="@a.Account.Id">Account <span class="mono">@Format.AccountNumber(a.Account.AccountNumber)</span></a>
+                                }
+                                else if (a.Status == ApplicationStatus.Rejected)
+                                {
+                                    <span>@a.ReviewNote</span>
+                                }
+                                else
+                                {
+                                    <span class="muted">Under review. Usually within one working day.</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

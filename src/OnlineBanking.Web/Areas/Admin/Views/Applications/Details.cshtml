@@ -1,0 +1,91 @@
+@model AccountApplication
+@{
+    ViewData["Title"] = "Review application";
+    var a = Model;
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Application #@a.Id · @a.AccountType account</p>
+        <h1>@a.Title @a.FirstName @a.MiddleName @a.LastName</h1>
+        <p class="muted">Submitted @Format.DateAndTime(a.SubmittedAt) · <span class="@Format.BadgeClass(a.Status)">@a.Status</span></p>
+    </div>
+    <a class="btn btn-ghost" asp-action="Index">All applications</a>
+</div>
+
+<div class="grid-2">
+    <div class="stack">
+        <div class="card">
+            <h2>Applicant</h2>
+            <dl class="dl">
+                <dt>Login</dt><dd>@(a.User!.FullName) · @a.User.Email</dd>
+                <dt>Father's name</dt><dd>@a.FatherName</dd>
+                <dt>Date of birth</dt><dd>@Format.Date(a.DateOfBirth)</dd>
+                <dt>Mobile</dt><dd>@a.Mobile</dd>
+                <dt>Aadhaar</dt><dd class="mono">XXXX XXXX @a.AadhaarLast4</dd>
+            </dl>
+        </div>
+        <div class="card">
+            <h2>Address</h2>
+            <p class="mb-0">
+                @a.AddressLine1<br />
+                @if (!string.IsNullOrEmpty(a.AddressLine2)) { <text>@a.AddressLine2<br /></text> }
+                @if (!string.IsNullOrEmpty(a.Landmark)) { <span>Near @a.Landmark</span><br /> }
+                @a.City, @a.State @a.Pincode
+            </p>
+        </div>
+        <div class="card">
+            <h2>Occupation</h2>
+            <dl class="dl">
+                <dt>Occupation</dt><dd>@a.Occupation</dd>
+                <dt>Source of income</dt><dd>@a.SourceOfIncome</dd>
+                <dt>Annual income</dt><dd class="mono">@Format.Money(a.AnnualIncome)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="stack">
+        @if (a.Status == ApplicationStatus.Pending)
+        {
+            <div class="card">
+                <h2>Approve</h2>
+                <p class="muted">Opens the account with a new account number. Add the cash the customer paid in at the branch, if any.</p>
+                <form asp-action="Approve" asp-route-id="@a.Id" method="post" class="form" data-once data-confirm="Open this account?">
+                    <div class="field">
+                        <label for="openingDeposit">Opening deposit (₹)</label>
+                        <input id="openingDeposit" name="openingDeposit" type="number" min="0" step="0.01" value="1000" />
+                    </div>
+                    <div class="field">
+                        <label for="approveNote">Note (optional)</label>
+                        <input id="approveNote" name="note" value="KYC verified." maxlength="200" />
+                    </div>
+                    <button class="btn btn-success" type="submit">Approve and open account</button>
+                </form>
+            </div>
+            <div class="card">
+                <h2>Reject</h2>
+                <form asp-action="Reject" asp-route-id="@a.Id" method="post" class="form" data-confirm="Reject this application?">
+                    <div class="field">
+                        <label for="rejectNote">Reason (shown to the customer)</label>
+                        <input id="rejectNote" name="note" required maxlength="200" placeholder="e.g. Address proof didn't match" />
+                    </div>
+                    <button class="btn btn-danger" type="submit">Reject</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <h2>Decision</h2>
+                <dl class="dl">
+                    <dt>Status</dt><dd><span class="@Format.BadgeClass(a.Status)">@a.Status</span></dd>
+                    @if (a.ReviewedAt is { } reviewed) { <dt>Reviewed</dt><dd>@Format.DateAndTime(reviewed)</dd> }
+                    @if (!string.IsNullOrEmpty(a.ReviewNote)) { <dt>Note</dt><dd>@a.ReviewNote</dd> }
+                    @if (a.Account is not null)
+                    {
+                        <dt>Account</dt><dd><a asp-controller="Accounts" asp-action="Details" asp-route-id="@a.Account.Id" class="mono">@Format.AccountNumber(a.Account.AccountNumber)</a></dd>
+                    }
+                </dl>
+            </div>
+        }
+    </div>
+</div>

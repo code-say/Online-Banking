@@ -1,0 +1,45 @@
+@model ContactViewModel
+@{
+    ViewData["Title"] = "Contact us";
+}
+<div class="grid-2">
+    <div class="card">
+        <h1>Contact us</h1>
+        <p class="muted">Questions about your account or a transaction? Send us a message and the branch team will reply by email.</p>
+        <form asp-action="Contact" method="post" class="form" data-once novalidate>
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+            <div class="form-grid">
+                <div class="field">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" autocomplete="name" />
+                    <span asp-validation-for="Name" class="field-validation-error"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" autocomplete="email" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+            </div>
+            <div class="field">
+                <label asp-for="Subject"></label>
+                <input asp-for="Subject" />
+                <span asp-validation-for="Subject" class="field-validation-error"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Message"></label>
+                <textarea asp-for="Message"></textarea>
+                <span asp-validation-for="Message" class="field-validation-error"></span>
+            </div>
+            <div><button class="btn btn-primary" type="submit" data-busy="Sending…">Send message</button></div>
+        </form>
+    </div>
+    <div class="card">
+        <h2>Branch</h2>
+        <dl class="dl">
+            <dt>Address</dt><dd>Demo Branch, Baner Road, Pune 411045</dd>
+            <dt>Hours</dt><dd>Mon–Fri 10:00–16:00, Sat 10:00–13:00</dd>
+            <dt>Phone</dt><dd>+91 20 6600 1000</dd>
+        </dl>
+        <p class="alert alert-warn small mt-16 mb-0">We will never ask for your password or transaction PIN by phone, email or message.</p>
+    </div>
+</div>

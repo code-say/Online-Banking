@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "About";
+}
+<div class="mid stack">
+    <div>
+        <p class="eyebrow">About this project</p>
+        <h1>Online Banking</h1>
+        <p class="muted">A demo internet-banking site built with ASP.NET Core MVC. The server renders every page with Razor views, so there's no separate frontend app.</p>
+    </div>
+
+    <div class="card">
+        <h2>What you can do</h2>
+        <ul>
+            <li><strong>Customers</strong> sign up, apply for a savings or current account (with KYC details), see balances, filter and download statements, and transfer money with a transaction PIN.</li>
+            <li><strong>Bank staff</strong> review applications, open accounts with an opening deposit, post cash deposits and withdrawals, freeze or close accounts, and read customer messages.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>How it's built</h2>
+        <dl class="dl">
+            <dt>Web</dt><dd>ASP.NET Core MVC (.NET 10), Razor views, Areas for the admin console</dd>
+            <dt>Data</dt><dd>Entity Framework Core with SQLite; money stored as whole paise; optimistic concurrency on balances</dd>
+            <dt>Security</dt><dd>Cookie authentication with roles, hashed passwords and PINs, antiforgery tokens on every form, security headers</dd>
+            <dt>Rules</dt><dd>Insufficient-funds checks, ₹2,00,000 daily transfer limit, PIN lockout, frozen accounts, idempotent transfers</dd>
+            <dt>Quality</dt><dd>xUnit tests for the banking rules, end-to-end browser test, GitHub Actions, Docker</dd>
+        </dl>
+    </div>
+
+    <p class="muted small">This started in 2022 as an ASP.NET MVC 5 (.NET Framework) project and was rebuilt in 2026 on ASP.NET Core so it can run on Linux and be hosted for free.</p>
+</div>

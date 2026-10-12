@@ -1,0 +1,116 @@
+@model StatementViewModel
+@{
+    var a = Model.Account;
+    ViewData["Title"] = $"{a.Type} account statement";
+    var area = Model.IsAdminView ? "Admin" : "";
+    var listAction = Model.IsAdminView ? "Statement" : "Details";
+    var f = Model.Filter;
+    var q = new Dictionary<string, string>();
+    if (f.From is { } fromDate) { q["From"] = fromDate.ToString("yyyy-MM-dd"); }
+    if (f.To is { } toDate) { q["To"] = toDate.ToString("yyyy-MM-dd"); }
+    if (!string.IsNullOrEmpty(f.Type)) { q["Type"] = f.Type; }
+    // asp-all-route-data replaces asp-route-* values, so the id goes in the dictionary too
+    var route = new Dictionary<string, string>(q) { ["id"] = a.Id.ToString() };
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">@(Model.IsAdminView ? $"{a.User?.FullName} · " : "")@a.Type account</p>
+        <h1 class="mono">@Format.AccountNumber(a.AccountNumber)</h1>
+        <p class="muted">Balance <strong class="mono">@Format.Money(a.Balance)</strong> · <span class="@Format.BadgeClass(a.Status)">@a.Status</span> · Opened @Format.Date(a.OpenedAt)</p>
+    </div>
+    <div class="actions no-print">
+        @if (Model.IsAdminView)
+        {
+            <a class="btn btn-ghost" asp-area="Admin" asp-controller="Accounts" asp-action="Details" asp-route-id="@a.Id">Back to account</a>
+        }
+        else if (a.Status == AccountStatus.Active)
+        {
+            <a class="btn btn-primary" asp-area="" asp-controller="Transfer" asp-action="Index" asp-route-from="@a.Id">Send money</a>
+        }
+        <a class="btn btn-ghost" asp-area="@area" asp-controller="Accounts" asp-action="Download" asp-all-route-data="route">Download CSV</a>
+        <button class="btn btn-ghost" type="button" data-print>Print</button>
+    </div>
+</div>
+
+@if (a.Status == AccountStatus.Frozen && !Model.IsAdminView)
+{
+    <div class="alert alert-warn">This account is frozen, so money can't move in or out. Please <a asp-area="" asp-controller="Home" asp-action="Contact">contact the bank</a>.</div>
+}
+
+<div class="card">
+    <form method="get" class="filters" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-route-id="@a.Id">
+        <div class="field">
+            <label for="From">From</label>
+            <input type="date" id="From" name="From" value="@(q.GetValueOrDefault("From"))" />
+        </div>
+        <div class="field">
+            <label for="To">To</label>
+            <input type="date" id="To" name="To" value="@(q.GetValueOrDefault("To"))" />
+        </div>
+        <div class="field">
+            <label for="Type">Type</label>
+            <select id="Type" name="Type">
+                <option value="">All transactions</option>
+                <option value="credit" selected="@(f.Type == "credit")">Money in</option>
+                <option value="debit" selected="@(f.Type == "debit")">Money out</option>
+            </select>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary btn-sm" type="submit">Apply</button>
+            <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-route-id="@a.Id">Reset</a>
+        </div>
+    </form>
+
+    <div class="summary">
+        <div><span class="muted small">Money in</span><strong class="credit mono">@Format.Money(Model.TotalIn)</strong></div>
+        <div><span class="muted small">Money out</span><strong class="debit mono">@Format.Money(Model.TotalOut)</strong></div>
+        <div><span class="muted small">Transactions</span><strong>@Model.TotalCount</strong></div>
+    </div>
+
+    @if (Model.Transactions.Count == 0)
+    {
+        <div class="empty"><h3>No transactions</h3><p>Nothing matches these filters.</p></div>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Date</th><th>Description</th><th>Reference</th><th class="amount">Amount</th><th class="amount">Balance</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.Transactions)
+                    {
+                        var credit = Format.IsCredit(t.Type);
+                        <tr>
+                            <td class="nowrap">@Format.Date(t.CreatedAt)<div class="tx-meta">@Format.ToIst(t.CreatedAt).ToString("h:mm tt")</div></td>
+                            <td><div class="tx-desc">@t.Description</div><div class="tx-meta">@Format.Counterparty(t)</div></td>
+                            <td class="mono small muted">@t.Reference</td>
+                            <td class="amount @(credit ? "credit" : "debit")">@Format.Signed(t)</td>
+                            <td class="amount">@Format.Money(t.BalanceAfter)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if (Model.PageCount > 1)
+        {
+            var prev = new Dictionary<string, string>(route) { ["Page"] = (Model.Page - 1).ToString() };
+            var next = new Dictionary<string, string>(route) { ["Page"] = (Model.Page + 1).ToString() };
+            <div class="pager">
+                <span class="muted small">Page @Model.Page of @Model.PageCount</span>
+                <div class="actions">
+                    @if (Model.Page > 1)
+                    {
+                        <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-all-route-data="prev">← Newer</a>
+                    }
+                    @if (Model.Page < Model.PageCount)
+                    {
+                        <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-all-route-data="next">Older →</a>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>

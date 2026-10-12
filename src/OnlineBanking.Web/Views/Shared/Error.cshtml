@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Error";
+}
+<div class="narrow card empty">
+    <h1>Something went wrong</h1>
+    <p>No money was moved. Please try again, and contact us if it keeps happening.</p>
+    @if (ViewBag.RequestId is string id)
+    {
+        <p class="small">Reference: <code>@id</code></p>
+    }
+    <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="Index">Go to home</a>
+</div>

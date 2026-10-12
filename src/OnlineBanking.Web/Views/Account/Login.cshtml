@@ -1,0 +1,34 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+<div class="narrow card">
+    <h1>Sign in</h1>
+    <p class="muted">Welcome back. Sign in to see your accounts.</p>
+
+    <form asp-action="Login" method="post" class="form" novalidate>
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" autocomplete="username" autofocus />
+            <span asp-validation-for="Email" class="field-validation-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+
+    <p class="muted mt-16 mb-0">New here? <a asp-action="Register">Open an account</a></p>
+
+    <div class="demo">
+        <p class="label mb-6">Demo logins</p>
+        <table>
+            <tr><th>Customer</th><td><code>@OnlineBanking.Web.Data.SeedData.CustomerEmail</code></td><td><code>@OnlineBanking.Web.Data.SeedData.CustomerPassword</code></td></tr>
+            <tr><th>Admin</th><td><code>@OnlineBanking.Web.Data.SeedData.AdminEmail</code></td><td><code>@OnlineBanking.Web.Data.SeedData.AdminPassword</code></td></tr>
+        </table>
+    </div>
+</div>

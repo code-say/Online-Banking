@@ -1,0 +1,93 @@
+@model AdminAccountViewModel
+@{
+    var a = Model.Account;
+    ViewData["Title"] = $"Account {Format.Masked(a.AccountNumber)}";
+    var active = a.Status == AccountStatus.Active;
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">@a.Type account · <a asp-controller="Customers" asp-action="Details" asp-route-id="@a.UserId">@(a.User!.FullName)</a></p>
+        <h1 class="mono">@Format.AccountNumber(a.AccountNumber)</h1>
+        <p class="muted">Balance <strong class="mono">@Format.Money(a.Balance)</strong> · <span class="@Format.BadgeClass(a.Status)">@a.Status</span> · Opened @Format.Date(a.OpenedAt)</p>
+    </div>
+    <div class="actions">
+        <a class="btn btn-ghost" asp-action="Statement" asp-route-id="@a.Id">Full statement</a>
+        @if (a.Status == AccountStatus.Active)
+        {
+            <form asp-action="SetStatus" asp-route-id="@a.Id" method="post" data-confirm="Freeze this account? No money can move in or out.">
+                <input type="hidden" name="status" value="Frozen" />
+                <button class="btn btn-ghost" type="submit">Freeze</button>
+            </form>
+        }
+        else if (a.Status == AccountStatus.Frozen)
+        {
+            <form asp-action="SetStatus" asp-route-id="@a.Id" method="post">
+                <input type="hidden" name="status" value="Active" />
+                <button class="btn btn-success" type="submit">Unfreeze</button>
+            </form>
+        }
+        @if (a.Status != AccountStatus.Closed)
+        {
+            <form asp-action="SetStatus" asp-route-id="@a.Id" method="post" data-confirm="Close this account permanently?">
+                <input type="hidden" name="status" value="Closed" />
+                <button class="btn btn-danger" type="submit">Close</button>
+            </form>
+        }
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <div class="card-head"><h2>Recent transactions</h2><a asp-action="Statement" asp-route-id="@a.Id">See all</a></div>
+        @if (Model.Recent.Count == 0)
+        {
+            <p class="muted">No transactions yet.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Date</th><th>Description</th><th class="amount">Amount</th><th class="amount">Balance</th></tr></thead>
+                    <tbody>
+                        @foreach (var t in Model.Recent)
+                        {
+                            var credit = Format.IsCredit(t.Type);
+                            <tr>
+                                <td class="nowrap">@Format.DateAndTime(t.CreatedAt)</td>
+                                <td><div class="tx-desc">@t.Description</div><div class="tx-meta">@Format.Counterparty(t) · @t.Reference</div></td>
+                                <td class="amount @(credit ? "credit" : "debit")">@Format.Signed(t)</td>
+                                <td class="amount">@Format.Money(t.BalanceAfter)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="card">
+        <h2>Cash at the counter</h2>
+        @if (!active)
+        {
+            <p class="muted">Cash can only be posted to active accounts.</p>
+        }
+        else
+        {
+            <div asp-validation-summary="All" class="validation-summary-errors" role="alert"></div>
+            <form method="post" class="form" data-once>
+                <div class="field">
+                    <label asp-for="Cash.Amount">Amount (₹)</label>
+                    <input asp-for="Cash.Amount" type="number" min="1" step="0.01" inputmode="decimal" />
+                </div>
+                <div class="field">
+                    <label asp-for="Cash.Description">Description (optional)</label>
+                    <input asp-for="Cash.Description" maxlength="60" placeholder="e.g. Cash deposit at branch" />
+                </div>
+                <div class="actions">
+                    <button class="btn btn-success" type="submit" asp-action="Deposit" asp-route-id="@a.Id">Deposit</button>
+                    <button class="btn btn-ghost" type="submit" asp-action="Withdraw" asp-route-id="@a.Id">Withdraw</button>
+                </div>
+            </form>
+        }
+    </div>
+</div>

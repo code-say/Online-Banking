@@ -1,0 +1,77 @@
+@model TransferViewModel
+@{
+    ViewData["Title"] = "Send money";
+}
+<div class="grid-2">
+    <div class="card">
+        <h1>Send money</h1>
+        <p class="muted">Transfer instantly to any account at the bank, including your own.</p>
+
+        @if (Model.Accounts.Count == 0)
+        {
+            <div class="empty"><h3>No active account</h3><p>You need an approved, active account to send money.</p>
+                <a class="btn btn-primary" asp-controller="Applications" asp-action="Create">Apply for an account</a></div>
+        }
+        else if (!Model.HasPin)
+        {
+            <div class="alert alert-warn mb-0">You haven't set a transaction PIN yet. <a asp-controller="Profile" asp-action="Index">Set your PIN</a> to start sending money.</div>
+        }
+        else
+        {
+            <form asp-action="Index" method="post" class="form" data-once novalidate>
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors" role="alert"></div>
+                <input type="hidden" asp-for="RequestId" />
+
+                <div class="field">
+                    <label asp-for="FromAccountId"></label>
+                    <select asp-for="FromAccountId" data-account-info>
+                        @foreach (var a in Model.Accounts)
+                        {
+                            <option value="@a.Id" data-balance="@Format.Money(a.Balance)" data-remaining="@Format.Money(Model.RemainingToday.GetValueOrDefault(a.Id))">@a.Type · @Format.AccountNumber(a.AccountNumber) · @Format.Money(a.Balance)</option>
+                        }
+                    </select>
+                    <span id="account-info" class="hint"></span>
+                    <span asp-validation-for="FromAccountId" class="field-validation-error"></span>
+                </div>
+
+                <div class="field">
+                    <label asp-for="ToAccountNumber"></label>
+                    <input asp-for="ToAccountNumber" inputmode="numeric" autocomplete="off" placeholder="12-digit account number" data-payee-lookup="@Url.Action("Lookup")" />
+                    <span id="payee" class="payee" aria-live="polite"></span>
+                    <span asp-validation-for="ToAccountNumber" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label asp-for="Amount">Amount (₹)</label>
+                        <input asp-for="Amount" type="number" min="1" step="0.01" inputmode="decimal" />
+                        <span asp-validation-for="Amount" class="field-validation-error"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Remarks"></label>
+                        <input asp-for="Remarks" maxlength="60" placeholder="e.g. Rent for October" />
+                        <span asp-validation-for="Remarks" class="field-validation-error"></span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label asp-for="Pin"></label>
+                    <input asp-for="Pin" class="pin" inputmode="numeric" maxlength="4" autocomplete="off" />
+                    <span asp-validation-for="Pin" class="field-validation-error"></span>
+                </div>
+
+                <div><button class="btn btn-primary" type="submit" data-busy="Sending…">Send money</button></div>
+            </form>
+        }
+    </div>
+
+    <div class="card">
+        <h2>Good to know</h2>
+        <ul class="muted">
+            <li>Transfers are instant and can't be reversed, so check the beneficiary name before you send.</li>
+            <li>You can send up to <strong>@Format.Money(Model.DailyLimit)</strong> per account per day.</li>
+            <li>Three wrong PIN attempts lock transfers for 15 minutes.</li>
+            <li>Submitting the same form twice never sends money twice.</li>
+        </ul>
+    </div>
+</div>

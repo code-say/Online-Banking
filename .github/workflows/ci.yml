@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    name: Build + tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore OnlineBanking.sln
+      - name: Build
+        run: |
+          set -o pipefail
+          dotnet build OnlineBanking.sln -c Release --no-restore -clp:NoSummary 2>&1 | tee build.log
+      - name: Report build warnings and errors
+        if: always()
+        run: |
+          grep -E " (warning|error) [A-Z]+[0-9]+" build.log | sort -u | head -40 | while read -r line; do
+            if echo "$line" | grep -q " error "; then echo "::error title=build::${line}"; else echo "::warning title=build::${line}"; fi
+          done || true
+      - name: Test
+        run: |
+          set -o pipefail
+          dotnet test OnlineBanking.sln -c Release --no-build --logger "console;verbosity=normal" 2>&1 | tee test.log
+          grep -E "Passed!|Failed!|Total tests" test.log | head -5 | while read -r line; do echo "::notice title=tests::${line}"; done || true
+      - name: Report test failures
+        if: failure()
+        run: |
+          grep -E -A8 "^\s+Failed |Error Message|Assert\.|Exception" test.log | head -100 | while read -r line; do
+            echo "::error title=test::${line}"
+          done || true
+
+  e2e:
+    name: End-to-end (browser)
+    runs-on: ubuntu-latest
+    needs: build-test
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Start app
+        run: |
+          nohup dotnet run --project src/OnlineBanking.Web -c Release --urls http://localhost:5090 > app.log 2>&1 &
+          for i in $(seq 1 90); do curl -sf http://localhost:5090/health && break; sleep 2; done
+          curl -sf http://localhost:5090/health
+      - name: Run browser flow
+        working-directory: e2e
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.55.0
+          npx playwright install --with-deps chromium
+          set -o pipefail
+          node flow.mjs 2>&1 | tee e2e.log
+      - name: Report e2e result
+        if: always()
+        run: |
+          grep -E "❌|console:|pageerror" e2e/e2e.log | head -10 | while read -r line; do echo "::error title=e2e::${line}"; done || true
+          grep -E "✅" e2e/e2e.log | tail -10 | while read -r line; do echo "::notice title=e2e::${line}"; done || true
+          grep -iE "fail|error|exception" app.log | head -15 | while read -r line; do echo "::warning title=app-log::${line}"; done || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screenshots
+          path: e2e/e2e-*.png
+          if-no-files-found: ignore
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: docker build -t online-banking .

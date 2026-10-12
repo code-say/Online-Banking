@@ -1,0 +1,32 @@
+@model List<CustomerRow>
+@{
+    ViewData["Title"] = "Customers";
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Admin console</p>
+        <h1>Customers</h1>
+        <p class="muted">@Model.Count registered customers</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Name</th><th>Contact</th><th>Joined</th><th>Accounts</th><th class="amount">Total balance</th></tr></thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@c.User.Id"><strong>@c.User.FullName</strong></a>
+                            @if (c.HasPendingApplication) { <span class="badge badge-pending">Application pending</span> }</td>
+                        <td>@c.User.Email<div class="tx-meta">@c.User.Phone</div></td>
+                        <td class="nowrap">@Format.Date(c.User.CreatedAt)</td>
+                        <td>@c.Accounts</td>
+                        <td class="amount">@Format.Money(c.Balance)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

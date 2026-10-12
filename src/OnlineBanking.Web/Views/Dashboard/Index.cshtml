@@ -1,0 +1,91 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var hour = Format.ToIst(DateTime.UtcNow).Hour;
+    var greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+}
+<div class="page-head">
+    <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>@greeting, @Model.Name.Split(' ')[0]</h1>
+    </div>
+    <div class="actions">
+        <a class="btn btn-primary" asp-controller="Transfer" asp-action="Index">Send money</a>
+        <a class="btn btn-ghost" asp-controller="Applications" asp-action="Create">Open another account</a>
+    </div>
+</div>
+
+@if (!Model.HasPin && Model.Accounts.Count > 0)
+{
+    <div class="alert alert-warn">Set your 4-digit transaction PIN before your first transfer. <a asp-controller="Profile" asp-action="Index">Set PIN</a></div>
+}
+@foreach (var app in Model.OpenApplications)
+{
+    if (app.Status == ApplicationStatus.Pending)
+    {
+        <div class="alert alert-info">Your <strong>@app.AccountType.ToString().ToLowerInvariant() account</strong> application from @Format.Date(app.SubmittedAt) is being reviewed by the bank.</div>
+    }
+    else
+    {
+        <div class="alert alert-error">Your @app.AccountType.ToString().ToLowerInvariant() account application was not approved: @app.ReviewNote <a asp-controller="Applications" asp-action="Create">Apply again</a></div>
+    }
+}
+
+@if (Model.Accounts.Count == 0)
+{
+    <div class="card empty">
+        <h3>You don't have a bank account yet</h3>
+        <p>Apply online in about two minutes. The bank reviews applications during working hours.</p>
+        @if (!Model.OpenApplications.Any(a => a.Status == ApplicationStatus.Pending))
+        {
+            <a class="btn btn-primary" asp-controller="Applications" asp-action="Create">Apply for an account</a>
+        }
+    </div>
+}
+else
+{
+    <div class="grid-cards">
+        @foreach (var a in Model.Accounts)
+        {
+            <partial name="_AccountCard" model="a" />
+        }
+        @if (Model.Accounts.Count > 1)
+        {
+            <div class="card total">
+                <span class="muted">Total balance</span>
+                <span class="big mono">@Format.Money(Model.TotalBalance)</span>
+                <span class="muted small">across @Model.Accounts.Count accounts</span>
+            </div>
+        }
+    </div>
+
+    <div class="card mt-24">
+        <div class="card-head">
+            <h2>Recent activity</h2>
+            <a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.Accounts[0].Id">Full statement</a>
+        </div>
+        @if (Model.Recent.Count == 0)
+        {
+            <p class="muted">No transactions yet.</p>
+        }
+        else
+        {
+            <ul class="tx-list">
+                @foreach (var t in Model.Recent)
+                {
+                    var credit = Format.IsCredit(t.Type);
+                    <li>
+                        <div class="tx-main">
+                            <span class="tx-icon @(credit ? "credit" : "debit")" aria-hidden="true">@(credit ? "↓" : "↑")</span>
+                            <div>
+                                <div class="tx-desc">@t.Description</div>
+                                <div class="tx-meta">@Format.DateAndTime(t.CreatedAt) · @Format.Counterparty(t) · @(t.Account!.Type) @Format.Masked(t.Account.AccountNumber)</div>
+                            </div>
+                        </div>
+                        <div class="amount mono nowrap @(credit ? "credit" : "debit")">@Format.Signed(t)</div>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}

@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Bank online, simply";
+}
+<section class="hero">
+    <div>
+        <p class="eyebrow">ASP.NET Core MVC · .NET 10</p>
+        <h1>Your bank account, online.</h1>
+        <p class="lead">Open a savings or current account, check your balance and statements, and send money to anyone at the bank, secured with a transaction PIN.</p>
+        <div class="actions">
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Open an account</a>
+            <a class="btn btn-ghost" asp-controller="Account" asp-action="Login">Sign in</a>
+        </div>
+
+        <div class="demo">
+            <p class="label mb-6">Try the demo</p>
+            <table>
+                <tr><th>Customer</th><td><code>@OnlineBanking.Web.Data.SeedData.CustomerEmail</code></td><td><code>@OnlineBanking.Web.Data.SeedData.CustomerPassword</code></td></tr>
+                <tr><th>Admin</th><td><code>@OnlineBanking.Web.Data.SeedData.AdminEmail</code></td><td><code>@OnlineBanking.Web.Data.SeedData.AdminPassword</code></td></tr>
+            </table>
+            <p class="small muted mt-6 mb-0">Demo transaction PIN: <code>@OnlineBanking.Web.Data.SeedData.CustomerPin</code>. Try sending money to <code>@Format.AccountNumber(OnlineBanking.Web.Data.SeedData.PayeeSavings)</code>.</p>
+        </div>
+    </div>
+    <div class="hero-card" aria-hidden="true">
+        <div class="acct">
+            <div class="acct-top"><span>Savings account</span><span>Active</span></div>
+            <div class="acct-balance">₹1,84,250.75</div>
+            <div class="acct-number">5010 0012 3456</div>
+        </div>
+        <div class="acct current">
+            <div class="acct-top"><span>Current account</span><span>Active</span></div>
+            <div class="acct-balance">₹72,401.00</div>
+            <div class="acct-number">5010 0012 3457</div>
+        </div>
+    </div>
+</section>
+
+<section class="features" aria-label="Features">
+    <div class="feature">
+        <div class="ico">₹</div>
+        <h3>Real balances</h3>
+        <p class="muted">Every rupee is a ledger entry. Transfers debit one account and credit the other in a single database transaction.</p>
+    </div>
+    <div class="feature">
+        <div class="ico">🔒</div>
+        <h3>Transaction PIN</h3>
+        <p class="muted">Money only leaves your account with your 4-digit PIN. Three wrong tries lock transfers for 15 minutes.</p>
+    </div>
+    <div class="feature">
+        <div class="ico">≡</div>
+        <h3>Statements</h3>
+        <p class="muted">Filter by date and type, see money in and out, and download a CSV for Excel.</p>
+    </div>
+    <div class="feature">
+        <div class="ico">✓</div>
+        <h3>Bank admin console</h3>
+        <p class="muted">Staff approve account applications, post cash deposits and withdrawals, freeze accounts and answer messages.</p>
+    </div>
+</section>
