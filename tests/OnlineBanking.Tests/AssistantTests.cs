@@ -141,7 +141,7 @@ public class AssistantTests
         var client = await app.CustomerAsync();
         var (_, body) = await AskAsync(client, "how much did I spend?");
         var reply = Reply(body);
-        Assert.Contains("\"transfersBetweenOwnAccountsExcluded\":4", reply); // 2 moves x 2 legs
+        Assert.Matches("\"transfersBetweenOwnAccountsExcluded\":\\s*4", reply); // 2 moves x 2 legs
         Assert.Contains("Transfers to Rahul Verma", reply);
     }
 
@@ -176,7 +176,7 @@ public class AssistantTests
         var client = await app.CustomerAsync();
         var (_, body) = await AskAsync(client, "send way too much");
         Assert.Equal(JsonValueKind.Null, body.GetProperty("transfer").ValueKind);
-        Assert.Contains("\"ready\":false", Reply(body));
+        Assert.Matches("\"ready\":\\s*false", Reply(body));
     }
 
     [Fact]
