@@ -9,6 +9,8 @@
     if (f.From is { } fromDate) { q["From"] = fromDate.ToString("yyyy-MM-dd"); }
     if (f.To is { } toDate) { q["To"] = toDate.ToString("yyyy-MM-dd"); }
     if (!string.IsNullOrEmpty(f.Type)) { q["Type"] = f.Type; }
+    // asp-all-route-data replaces asp-route-* values, so the id goes in the dictionary too
+    var route = new Dictionary<string, string>(q) { ["id"] = a.Id.ToString() };
 }
 <div class="page-head">
     <div>
@@ -25,7 +27,7 @@
         {
             <a class="btn btn-primary" asp-area="" asp-controller="Transfer" asp-action="Index" asp-route-from="@a.Id">Send money</a>
         }
-        <a class="btn btn-ghost" asp-area="@area" asp-controller="Accounts" asp-action="Download" asp-route-id="@a.Id" asp-all-route-data="q">Download CSV</a>
+        <a class="btn btn-ghost" asp-area="@area" asp-controller="Accounts" asp-action="Download" asp-all-route-data="route">Download CSV</a>
         <button class="btn btn-ghost" type="button" data-print>Print</button>
     </div>
 </div>
@@ -94,18 +96,18 @@
 
         @if (Model.PageCount > 1)
         {
-            var prev = new Dictionary<string, string>(q) { ["Page"] = (Model.Page - 1).ToString() };
-            var next = new Dictionary<string, string>(q) { ["Page"] = (Model.Page + 1).ToString() };
+            var prev = new Dictionary<string, string>(route) { ["Page"] = (Model.Page - 1).ToString() };
+            var next = new Dictionary<string, string>(route) { ["Page"] = (Model.Page + 1).ToString() };
             <div class="pager">
                 <span class="muted small">Page @Model.Page of @Model.PageCount</span>
                 <div class="actions">
                     @if (Model.Page > 1)
                     {
-                        <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-route-id="@a.Id" asp-all-route-data="prev">← Newer</a>
+                        <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-all-route-data="prev">← Newer</a>
                     }
                     @if (Model.Page < Model.PageCount)
                     {
-                        <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-route-id="@a.Id" asp-all-route-data="next">Older →</a>
+                        <a class="btn btn-ghost btn-sm" asp-area="@area" asp-controller="Accounts" asp-action="@listAction" asp-all-route-data="next">Older →</a>
                     }
                 </div>
             </div>
