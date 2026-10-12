@@ -74,8 +74,10 @@ try {
   await page.selectOption('#Type', 'credit');
   await page.click('.filters .btn-primary');
   await expectText('Salary credit');
-  const csv = await page.request.get(await page.locator('text=Download CSV').getAttribute('href').then((h) => new URL(h, BASE).href));
-  if (!(await csv.text()).includes('Date (IST),Reference')) throw new Error('CSV download missing header');
+  const href = new URL(await page.locator('a:has-text("Download CSV")').getAttribute('href'), BASE).href;
+  const csv = await page.request.get(href);
+  const body = await csv.text();
+  if (!body.includes('Date (IST),Reference')) throw new Error(`CSV download missing header: ${href} -> ${csv.status()} ${csv.headers()['content-type']} ${body.slice(0, 160).replace(/\s+/g, ' ')}`);
   await page.screenshot({ path: 'e2e-statement.png', fullPage: true });
   ok('Statement filters and CSV');
 
